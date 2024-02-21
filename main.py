@@ -43,7 +43,7 @@ def main():
         team_players_dict[team] = team_players
     
     with open('team_players.json', 'w') as json_file:
-        json.dump(team_players_dict, json_file, indent=4)
+        json.dump(team_players_dict, json_file, indent=2, sort_keys=True, ensure_ascii=False)
 
 if __name__ == '__main__':
     main()
