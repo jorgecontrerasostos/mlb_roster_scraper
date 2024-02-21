@@ -1,6 +1,6 @@
 from helpers import fetch_team_urls, get_team_players
 from pprint import pprint
-
+import json
 
 def main():
     team_players_dict = {}
@@ -42,8 +42,8 @@ def main():
         team_players = get_team_players(team_content)
         team_players_dict[team] = team_players
     
-    for team, players in team_players_dict.items():
-        pprint(f"{team}: {players}")
+    with open('team_players.json', 'w') as json_file:
+        json.dump(team_players_dict, json_file, indent=4)
 
 if __name__ == '__main__':
     main()
