@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 
 def request(url: str) -> requests.Response:
     """
@@ -10,13 +11,13 @@ def request(url: str) -> requests.Response:
         if status != 200:
             print(f"Error: status code - {status}")
             return None
-        print(f"Success!\nRequest to URL: {url} - Status: {status}")
-        return response.text
+        else:
+            return response.text
     except requests.exceptions.RequestException as e:
         print(f"Error making request to {url}: {e}")
         return None
 
-def fetch_urls(urls: list[str]) -> list[str]:
+def fetch_team_urls(urls: list[str]) -> list[str]:
     """
     Fetches the content of the given URLs and returns a list of the content.
     """
@@ -28,3 +29,16 @@ def fetch_urls(urls: list[str]) -> list[str]:
         else:
             print(f"Error fetching content from {url}")
     return url_content
+
+def get_team_players(content: list[str]) -> list[str]:
+    """
+    Extracts the player names from the given content.
+    """
+    player_names = []
+    for team in content:
+        soup = BeautifulSoup(team, "html.parser")
+        players = soup.find_all('td', class_='info')
+        for player in players:
+            player = player.find('a').text
+            player_names.append(player)
+    return player_names
