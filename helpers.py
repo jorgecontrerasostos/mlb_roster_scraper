@@ -1,50 +1,30 @@
-import aiohttp
-import asyncio
+import requests
 
-def build_team_url() -> list:
-    team_urls = []
-    teams = [
-        'redsox',
-        'yankees',
-        'bluejays',
-        'rays',
-        'orioles',
-        'whitesox',
-        'guardians',
-        'tigers',
-        'royals',
-        'twins',
-        'cubs',
-        'reds',
-        'brewers',
-        'pirates',
-        'cardinals',
-        'braves',
-        'marlins',
-        'mets',
-        'phillies',
-        'nationals',
-        'astros',
-        'diamondbacks',
-        'angels',
-        'athletics',
-        'mariners',
-        'rangers',
-        'rockies',
-        'dodgers',
-        'padres',
-        'giants',
-    ]
-    for team in teams:
-        team_urls.append(f'https://www.mlb.com/{team}/roster/40-man')
-    return team_urls
-    
+def request(url: str) -> requests.Response:
+    """
+    Makes a request to the given URL and returns the response.
+    """
+    try:
+        response = requests.get(url)
+        status = response.status_code
+        if status != 200:
+            print(f"Error: status code - {status}")
+            return None
+        print(f"Success!\nRequest to URL: {url} - Status: {status}")
+        return response.text
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request to {url}: {e}")
+        return None
 
-async def fetch(session, url):
-    async with session.get(url) as response:
-        return await response.text()
-    
-async def fetch_all(urls):
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_all(session, url) for url in urls]
-        return await asyncio.gather(*tasks)
+def fetch_urls(urls: list[str]) -> list[str]:
+    """
+    Fetches the content of the given URLs and returns a list of the content.
+    """
+    url_content = []
+    for url in urls:
+        content = request(url)
+        if content:
+            url_content.append(content)
+        else:
+            print(f"Error fetching content from {url}")
+    return url_content
